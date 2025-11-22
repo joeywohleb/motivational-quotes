@@ -2,11 +2,20 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# Copy package files
 COPY package.json package-lock.json ./
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh ./
+RUN chmod +x ./docker-entrypoint.sh
+
+# Install dependencies (will be preserved by volume or reinstalled by entrypoint)
 RUN npm install
 
+# Copy the rest of the application code
 COPY . .
 
 EXPOSE 3000
 
+ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["npm", "start"]
