@@ -1,12 +1,18 @@
 # motivational-quotes
-A full-stack motivational quote app built with React, Node, and GraphQL — fully containerized and deployable through automated CI/CD.
+A motivational quote application built with React and TypeScript, featuring a simple UI and fully containerized development environment.
 
 ## Tech Stack
 
 ### Frontend
-- **React** - UI library
+- **React 19** - UI library
 - **TypeScript** - Type safety
-- **Testing Library** - Component testing utilities
+- **Tamagui** - Cross-platform UI component library
+  - `@tamagui/core` - Core styling and theming
+  - `@tamagui/stacks` - Layout components (YStack, XStack)
+  - `@tamagui/button` - Button components
+  - `@tamagui/separator` - Separator components
+- **React Testing Library** - Component testing utilities
+- **Jest** - Test runner
 
 ## Development Setup
 
@@ -20,18 +26,36 @@ A full-stack motivational quote app built with React, Node, and GraphQL — full
    ```bash
    docker-compose up
    ```
+   
+   For a fresh build (recommended on first run or after dependency changes):
+   ```bash
+   docker-compose down
+   docker-compose build --no-cache
+   docker-compose up
+   ```
 
 2. The application will be available at `http://localhost:3000`
 
-3. To run in detached mode (background):
+3. The Docker entrypoint script automatically ensures all dependencies are installed, including:
+   - Tamagui UI components
+   - PapaParse for CSV parsing
+   - All React dependencies
+
+4. To run in detached mode (background):
    ```bash
    docker-compose up -d
    ```
 
-4. To stop the containers:
+5. To stop the containers:
    ```bash
    docker-compose down
    ```
+
+#### Docker Development Features
+- **Automatic dependency installation**: The entrypoint script ensures node_modules are properly installed
+- **Hot reload**: Enabled via volume mounting
+- **File watching**: Configured with `CHOKIDAR_USEPOLLING=true` and `WATCHPACK_POLLING=true` for cross-platform compatibility
+- **Node modules preservation**: Anonymous volume prevents host node_modules from overwriting container dependencies
 
 ### Running Locally (Without Docker)
 
@@ -51,13 +75,20 @@ A full-stack motivational quote app built with React, Node, and GraphQL — full
 
 - `npm start` - Runs the app in development mode
 - `npm run build` - Builds the app for production
-- `npm test` - Launches the test runner
+- `npm test` - Launches the test runner (runs in watch mode by default)
+- `npm test -- --watchAll=false` - Run tests once without watch mode
 - `npm run eject` - Ejects from Create React App (irreversible)
 
-### Development Features
-- **Hot reload** enabled via volume mounting in Docker
-- **File watching** configured with `CHOKIDAR_USEPOLLING=true` for cross-platform compatibility
-- **Node modules** are preserved in a separate volume to prevent overwriting during development
+### Testing
+
+The project includes comprehensive unit tests for the components.
+
+Run tests with:
+```bash
+npm test
+```
+
+All tests use React Testing Library and are configured with a custom test utility (`src/test-utils.tsx`) that provides TamaguiProvider setup for consistent component rendering.
 
 ## Production Build
 
@@ -79,13 +110,21 @@ The production build will be available at `http://localhost`
 
 ```
 motivational-quotes/
-├── public/                 # Static assets
-├── src/                    # React application source
-│   ├── App.tsx            # Main App component
-│   ├── index.tsx          # Application entry point
+├── public/                    # Static assets
+│   ├── quotes.csv            # CSV file containing quotes
 │   └── ...
-├── Dockerfile.dev         # Development Docker image
-├── docker-compose.yml     # Docker Compose configuration
-└── package.json           # Dependencies and scripts
+├── src/                       # React application source
+│   ├── components/           # React components
+│   ├── App.tsx               # Main App component
+│   ├── App.test.tsx          # App component tests
+│   ├── index.tsx             # Application entry point
+│   ├── tamagui.config.ts     # Tamagui configuration
+│   ├── test-utils.tsx        # Test utilities with TamaguiProvider
+│   └── ...
+├── Dockerfile.dev            # Development Docker image
+├── docker-entrypoint.sh      # Docker entrypoint script
+├── docker-compose.yml        # Docker Compose configuration
+├── .dockerignore             # Files to exclude from Docker builds
+└── package.json              # Dependencies and scripts
 ```
 
