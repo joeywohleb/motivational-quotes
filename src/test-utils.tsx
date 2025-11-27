@@ -78,7 +78,6 @@ const testConfig = createTamagui({
       size: {},
     },
   },
-  animations: {},
 });
 
 // Custom render function that includes TamaguiProvider
