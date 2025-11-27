@@ -2,37 +2,38 @@ import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import { render } from './test-utils';
 import App from './App';
-import Papa from 'papaparse';
+import { MockedProvider } from '@apollo/client/testing';
+import { GET_RANDOM_QUOTE } from './graphql/queries';
 
-// Mock papaparse
-jest.mock('papaparse');
-
-// Mock fetch
-global.fetch = jest.fn();
+const mocks = [
+  {
+    request: {
+      query: GET_RANDOM_QUOTE,
+    },
+    result: {
+      data: {
+        randomQuote: {
+          id: '1',
+          quote: 'Test quote',
+          permalink: 'test-quote',
+          author: {
+            id: '1',
+            name: 'Test Author',
+            permalink: 'test-author',
+          },
+        },
+      },
+    },
+  },
+];
 
 describe('App', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('should render QuoteDisplay component', async () => {
-    (global.fetch as jest.Mock).mockResolvedValueOnce({
-      text: jest.fn().mockResolvedValueOnce('quote,author,category'),
-    });
-
-    (Papa.parse as jest.Mock).mockImplementation((csv, options) => {
-      options.complete({
-        data: [
-          {
-            quote: 'Test quote',
-            author: 'Test Author',
-            category: 'test',
-          },
-        ],
-      });
-    });
-
-    render(<App />);
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <App />
+      </MockedProvider>
+    );
 
     await waitFor(() => {
       expect(screen.queryByText(/loading quotes/i)).not.toBeInTheDocument();

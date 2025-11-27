@@ -1,73 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Text } from '@tamagui/core';
 import { YStack, XStack } from '@tamagui/stacks';
 import { Button } from '@tamagui/button';
 import { Separator } from '@tamagui/separator';
-import Papa, { ParseResult } from 'papaparse';
+import { useQuery } from '@apollo/client';
+import { GET_RANDOM_QUOTE } from '../graphql/queries';
+
+interface Author {
+  id: string;
+  name: string;
+  permalink: string;
+}
 
 interface Quote {
+  id: string;
   quote: string;
-  author: string;
-  category: string;
+  permalink: string;
+  author: Author;
+}
+
+interface RandomQuoteData {
+  randomQuote: Quote;
 }
 
 const QuoteDisplay: React.FC = () => {
-  const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [currentQuote, setCurrentQuote] = useState<Quote | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    // Load quotes from CSV file
-    fetch('/quotes.csv')
-      .then((response) => response.text())
-      .then((csvText) => {
-        Papa.parse<Quote>(csvText, {
-          header: true,
-          skipEmptyLines: true,
-          complete: (results: ParseResult<Quote>) => {
-            const parsedQuotes = results.data.filter(
-              (q: Quote) => q.quote && q.author
-            );
-            setQuotes(parsedQuotes);
-            // Select a random quote on initial load
-            if (parsedQuotes.length > 0) {
-              const randomIndex = Math.floor(
-                Math.random() * parsedQuotes.length
-              );
-              setCurrentQuote(parsedQuotes[randomIndex]);
-            }
-            setIsLoading(false);
-          },
-          error: (error: Error) => {
-            console.error('Error parsing CSV:', error);
-            setIsLoading(false);
-          },
-        });
-      })
-      .catch((error) => {
-        console.error('Error loading quotes:', error);
-        setIsLoading(false);
-      });
-  }, []);
+  const { loading, error, data, refetch } = useQuery<RandomQuoteData>(GET_RANDOM_QUOTE);
 
   const getRandomQuote = () => {
-    if (quotes.length > 0) {
-      setIsAnimating(true);
-      setTimeout(() => {
-        const randomIndex = Math.floor(Math.random() * quotes.length);
-        setCurrentQuote(quotes[randomIndex]);
-        setIsAnimating(false);
-      }, 150);
-    }
+    setIsAnimating(true);
+    setTimeout(() => {
+      refetch();
+      setIsAnimating(false);
+    }, 150);
   };
 
-  const parseTags = (category: string): string[] => {
-    if (!category) return [];
-    return category.split(',').map((tag) => tag.trim()).filter(Boolean);
-  };
-
-  if (isLoading) {
+  if (loading) {
     return (
       <YStack
         flex={1}
@@ -84,7 +52,24 @@ const QuoteDisplay: React.FC = () => {
     );
   }
 
-  if (!currentQuote) {
+  if (error) {
+    return (
+      <YStack
+        flex={1}
+        alignItems="center"
+        justifyContent="center"
+        padding="$4"
+        minHeight="100vh"
+        backgroundColor="$background"
+      >
+        <Text fontSize="$6" color="$color">
+          Error loading quote: {error.message}
+        </Text>
+      </YStack>
+    );
+  }
+
+  if (!data?.randomQuote) {
     return (
       <YStack
         flex={1}
@@ -101,7 +86,7 @@ const QuoteDisplay: React.FC = () => {
     );
   }
 
-  const tags = parseTags(currentQuote.category);
+  const currentQuote = data.randomQuote;
 
   return (
     <YStack
@@ -148,34 +133,9 @@ const QuoteDisplay: React.FC = () => {
 
         <XStack justifyContent="center" alignItems="center" marginTop="$2">
           <Text fontSize="$5" color="$color" fontStyle="italic">
-            — {currentQuote.author}
+            — {currentQuote.author.name}
           </Text>
         </XStack>
-
-        {tags.length > 0 && (
-          <XStack
-            flexWrap="wrap"
-            justifyContent="center"
-            space="$2"
-            marginTop="$4"
-          >
-            {tags.map((tag, index) => (
-              <Text
-                key={index}
-                fontSize="$3"
-                paddingHorizontal="$3"
-                paddingVertical="$1"
-                borderRadius="$2"
-                backgroundColor="$color2"
-                color="$color"
-                borderWidth={1}
-                borderColor="$borderColor"
-              >
-                {tag}
-              </Text>
-            ))}
-          </XStack>
-        )}
 
         <XStack justifyContent="center" marginTop="$6">
           <Button
