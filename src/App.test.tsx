@@ -5,6 +5,17 @@ import App from './App';
 import { MockedProvider } from '@apollo/client/testing';
 import { GET_RANDOM_QUOTE } from './graphql/queries';
 
+const mockQuote = {
+  id: '1',
+  quote: 'Test quote',
+  permalink: 'test-quote',
+  author: {
+    id: '1',
+    name: 'Test Author',
+    permalink: 'test-author',
+  },
+};
+
 const mocks = [
   {
     request: {
@@ -12,34 +23,28 @@ const mocks = [
     },
     result: {
       data: {
-        randomQuote: {
-          id: '1',
-          quote: 'Test quote',
-          permalink: 'test-quote',
-          author: {
-            id: '1',
-            name: 'Test Author',
-            permalink: 'test-author',
-          },
-        },
+        randomQuote: mockQuote,
       },
     },
   },
 ];
 
 describe('App', () => {
-  it('should render QuoteDisplay component', async () => {
+  it('should render Header and QuoteDisplay components', async () => {
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <MockedProvider mocks={mocks}>
         <App />
       </MockedProvider>
     );
 
+    // Wait for Header to render
     await waitFor(() => {
-      expect(screen.queryByText(/loading quotes/i)).not.toBeInTheDocument();
+      expect(screen.getByText('A Motivational Quote')).toBeInTheDocument();
     });
 
-    // App should render QuoteDisplay which shows quotes
-    expect(screen.getByText(/test quote/i)).toBeInTheDocument();
+    // Verify navigation links from Header are present
+    expect(screen.getAllByText('Home').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Random').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Browse').length).toBeGreaterThan(0);
   });
 });
