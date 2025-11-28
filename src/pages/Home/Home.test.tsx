@@ -1,10 +1,11 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
-import { render } from '../test-utils';
 import userEvent from '@testing-library/user-event';
-import QuoteDisplay from './QuoteDisplay';
 import { MockedProvider } from '@apollo/client/testing';
-import { GET_RANDOM_QUOTE } from '../graphql/queries';
+
+import { GET_RANDOM_QUOTE } from '../../graphql/queries';
+import { render } from '../../test-utils';
+import { Home } from './Home';
 
 const mockQuote = {
   id: '1',
@@ -28,7 +29,7 @@ const mockQuote2 = {
   },
 };
 
-describe('QuoteDisplay', () => {
+describe('Home', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -50,13 +51,13 @@ describe('QuoteDisplay', () => {
               randomQuote: mockQuote,
             },
           },
-          delay: 1000, // Delay to keep loading state
+          delay: 1000,
         },
       ];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <QuoteDisplay />
+        <MockedProvider mocks={mocks}>
+          <Home />
         </MockedProvider>
       );
 
@@ -80,8 +81,8 @@ describe('QuoteDisplay', () => {
       ];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <QuoteDisplay />
+        <MockedProvider mocks={mocks}>
+          <Home />
         </MockedProvider>
       );
 
@@ -107,8 +108,8 @@ describe('QuoteDisplay', () => {
       ];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <QuoteDisplay />
+        <MockedProvider mocks={mocks}>
+          <Home />
         </MockedProvider>
       );
 
@@ -134,8 +135,8 @@ describe('QuoteDisplay', () => {
       ];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <QuoteDisplay />
+        <MockedProvider mocks={mocks}>
+          <Home />
         </MockedProvider>
       );
 
@@ -169,8 +170,8 @@ describe('QuoteDisplay', () => {
       ];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <QuoteDisplay />
+        <MockedProvider mocks={mocks}>
+          <Home />
         </MockedProvider>
       );
 
@@ -204,8 +205,8 @@ describe('QuoteDisplay', () => {
       ];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <QuoteDisplay />
+        <MockedProvider mocks={mocks}>
+          <Home />
         </MockedProvider>
       );
 
@@ -231,8 +232,8 @@ describe('QuoteDisplay', () => {
       ];
 
       render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <QuoteDisplay />
+        <MockedProvider mocks={mocks}>
+          <Home />
         </MockedProvider>
       );
 

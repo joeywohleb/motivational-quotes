@@ -2,8 +2,8 @@ import { ApolloProvider } from '@apollo/client';
 import { YStack } from '@tamagui/stacks';
 
 import { apolloClient } from './graphql/client';
-import Header from './components/Header';
-import QuoteDisplay from './components/QuoteDisplay';
+import { Header }  from './components';
+import { Home } from './pages';
 import './App.css';
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
     <ApolloProvider client={apolloClient}>
       <YStack flex={1} minHeight="100vh" backgroundColor="$background">
         <Header />
-        <QuoteDisplay />
+        <Home />
       </YStack>
     </ApolloProvider>
   );

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Text } from '@tamagui/core';
-import { YStack, XStack } from '@tamagui/stacks';
+import React, { useState } from "react";
+import { Text } from "@tamagui/core";
+import { YStack, XStack } from "@tamagui/stacks";
 
 interface NavLinkProps {
   children: React.ReactNode;
@@ -16,12 +16,12 @@ const NavLink: React.FC<NavLinkProps> = ({ children, isActive, onPress }) => {
       paddingHorizontal="$3"
       paddingVertical="$2"
       fontSize="$4"
-      color={isActive ? 'white' : 'rgba(255, 255, 255, 0.7)'}
+      color={isActive ? "white" : "rgba(255, 255, 255, 0.7)"}
       fontWeight="600"
       cursor="pointer"
       userSelect="none"
       hoverStyle={{
-        color: 'white',
+        color: "white",
       }}
     >
       {children}
@@ -29,9 +29,15 @@ const NavLink: React.FC<NavLinkProps> = ({ children, isActive, onPress }) => {
   );
 };
 
-const Header: React.FC = () => {
+const menuItems = [
+  { name: "Home", page: "home" },
+  { name: "Random", page: "random" },
+  { name: "Browse", page: "quotes" },
+];
+
+export const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState('home');
+  const [currentPage, setCurrentPage] = useState("home");
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -66,7 +72,7 @@ const Header: React.FC = () => {
           fontWeight="700"
           color="white"
           cursor="pointer"
-          onPress={() => handleNavClick('home')}
+          onPress={() => handleNavClick("home")}
         >
           A Motivational Quote
         </Text>
@@ -77,27 +83,18 @@ const Header: React.FC = () => {
           alignItems="center"
           display="none"
           $gtSm={{
-            display: 'flex',
+            display: "flex",
           }}
         >
-          <NavLink
-            isActive={currentPage === 'home'}
-            onPress={() => handleNavClick('home')}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            isActive={currentPage === 'random'}
-            onPress={() => handleNavClick('random')}
-          >
-            Random
-          </NavLink>
-          <NavLink
-            isActive={currentPage === 'quotes'}
-            onPress={() => handleNavClick('quotes')}
-          >
-            Browse
-          </NavLink>
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.page}
+              isActive={currentPage === item.page}
+              onPress={() => handleNavClick(item.page)}
+            >
+              {item.name}
+            </NavLink>
+          ))}
         </XStack>
 
         {/* Mobile Menu Button */}
@@ -106,7 +103,7 @@ const Header: React.FC = () => {
           padding="$2"
           display="flex"
           $gtSm={{
-            display: 'none',
+            display: "none",
           }}
           cursor="pointer"
           marginLeft="auto"
@@ -118,7 +115,7 @@ const Header: React.FC = () => {
               backgroundColor="white"
               borderRadius="$1"
               animation="quick"
-              rotate={isMobileMenuOpen ? '45deg' : '0deg'}
+              rotate={isMobileMenuOpen ? "45deg" : "0deg"}
               y={isMobileMenuOpen ? 8 : 0}
             />
             <YStack
@@ -135,7 +132,7 @@ const Header: React.FC = () => {
               backgroundColor="white"
               borderRadius="$1"
               animation="quick"
-              rotate={isMobileMenuOpen ? '-45deg' : '0deg'}
+              rotate={isMobileMenuOpen ? "-45deg" : "0deg"}
               y={isMobileMenuOpen ? -8 : 0}
             />
           </YStack>
@@ -146,7 +143,7 @@ const Header: React.FC = () => {
       <YStack
         display="flex"
         $gtSm={{
-          display: 'none',
+          display: "none",
         }}
         overflow="hidden"
         maxHeight={isMobileMenuOpen ? 200 : 0}
@@ -156,32 +153,18 @@ const Header: React.FC = () => {
         borderTopWidth={isMobileMenuOpen ? 1 : 0}
         borderTopColor="rgba(255, 255, 255, 0.1)"
       >
-        <YStack
-          padding="$3"
-          gap="$2"
-        >
-          <NavLink
-            isActive={currentPage === 'home'}
-            onPress={() => handleNavClick('home')}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            isActive={currentPage === 'random'}
-            onPress={() => handleNavClick('home')}
-          >
-            Random
-          </NavLink>
-          <NavLink
-            isActive={currentPage === 'quotes'}
-            onPress={() => handleNavClick('quotes')}
-          >
-            Browse
-          </NavLink>
+        <YStack padding="$3" gap="$2">
+          {menuItems.map((item) => (
+            <NavLink
+              key={item.page}
+              isActive={currentPage === item.page}
+              onPress={() => handleNavClick(item.page)}
+            >
+              {item.name}
+            </NavLink>
+          ))}
         </YStack>
       </YStack>
     </YStack>
   );
 };
-
-export default Header;

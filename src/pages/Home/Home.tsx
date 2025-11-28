@@ -1,30 +1,21 @@
+
+
 import React, { useState } from 'react';
 import { Text } from '@tamagui/core';
 import { YStack, XStack } from '@tamagui/stacks';
 import { Button } from '@tamagui/button';
-import { Separator } from '@tamagui/separator';
 import { useQuery } from '@apollo/client';
-import { GET_RANDOM_QUOTE } from '../graphql/queries';
 
-interface Author {
-  id: string;
-  name: string;
-  permalink: string;
-}
-
-interface Quote {
-  id: string;
-  quote: string;
-  permalink: string;
-  author: Author;
-}
+import { GET_RANDOM_QUOTE } from '../../graphql/queries';
+import {  QuoteDisplay }  from '../../components';
+import { Quote } from '../../types';
 
 interface RandomQuoteData {
   randomQuote: Quote;
 }
 
-const QuoteDisplay: React.FC = () => {
-  const [isAnimating, setIsAnimating] = useState(false);
+export function Home() {
+    const [isAnimating, setIsAnimating] = useState(false);
   const { loading, error, data, refetch } = useQuery<RandomQuoteData>(GET_RANDOM_QUOTE);
 
   const getRandomQuote = () => {
@@ -118,25 +109,7 @@ const QuoteDisplay: React.FC = () => {
         animation="quick"
         key={currentQuote.quote}
       >
-        <Text
-          fontSize="$7"
-          fontWeight="600"
-          lineHeight="$7"
-          color="$color"
-          textAlign="center"
-          marginBottom="$2"
-        >
-          "{currentQuote.quote}"
-        </Text>
-
-        <Separator />
-
-        <XStack justifyContent="center" alignItems="center" marginTop="$2">
-          <Text fontSize="$5" color="$color" fontStyle="italic">
-            — {currentQuote.author.name}
-          </Text>
-        </XStack>
-
+        <QuoteDisplay quote={currentQuote || null} />
         <XStack justifyContent="center" marginTop="$6">
           <Button
             onPress={getRandomQuote}
@@ -162,7 +135,5 @@ const QuoteDisplay: React.FC = () => {
       </YStack>
     </YStack>
   );
-};
-
-export default QuoteDisplay;
+}
 

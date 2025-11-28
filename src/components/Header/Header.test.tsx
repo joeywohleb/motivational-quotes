@@ -1,8 +1,9 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
-import { render } from '../test-utils';
 import userEvent from '@testing-library/user-event';
-import Header from './Header';
+
+import { Header } from './Header';
+import { render } from '../../test-utils';
 
 describe('Header', () => {
   describe('Rendering', () => {
