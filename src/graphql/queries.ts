@@ -14,3 +14,18 @@ export const GET_RANDOM_QUOTE = gql`
     }
   }
 `;
+
+export const GET_QUOTE_BY_ID = gql`
+  query GetQuoteById($quoteId: Int!) {
+    quoteById(quoteId: $quoteId) {
+      id
+      quote
+      permalink
+      author {
+        id
+        name
+        permalink
+      }
+    }
+  }
+`;

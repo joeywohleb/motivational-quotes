@@ -1,0 +1,1 @@
+export { ViewQuote } from './ViewQuote';
