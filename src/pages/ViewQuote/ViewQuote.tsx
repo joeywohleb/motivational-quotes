@@ -1,19 +1,22 @@
-
-
 import React, { useState } from 'react';
 import { Text } from '@tamagui/core';
 import { YStack, XStack } from '@tamagui/stacks';
 import { Button } from '@tamagui/button';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
-import { useRandomQuote } from '../../hooks';
-import {  QuoteDisplay }  from '../../components';
+import { useQuoteById, useRandomQuote } from '../../hooks';
+import { QuoteDisplay } from '../../components';
 import { buildQuoteUrl } from '../../utils/permalinks';
 
-export function Home() {
+export function ViewQuote() {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isAnimating, setIsAnimating] = useState(false);
-  const { loading, error, data, refetch } = useRandomQuote();
+
+  const quoteId = id ? parseInt(id, 10) : null;
+
+  const { loading, error, quote } = useQuoteById(quoteId);
+  const { refetch } = useRandomQuote();
 
   const getRandomQuote = async () => {
     setIsAnimating(true);
@@ -43,7 +46,7 @@ export function Home() {
         backgroundColor="$background"
       >
         <Text fontSize="$6" color="$color">
-          Loading quotes...
+          Loading quote...
         </Text>
       </YStack>
     );
@@ -66,24 +69,12 @@ export function Home() {
     );
   }
 
-  if (!data) {
-    return (
-      <YStack
-        flex={1}
-        alignItems="center"
-        justifyContent="center"
-        padding="$4"
-        minHeight="100vh"
-        backgroundColor="$background"
-      >
-        <Text fontSize="$6" color="$color">
-          No quotes available
-        </Text>
-      </YStack>
-    );
+  if (!quote) {
+    navigate('/not-found', { replace: true });
+    return null;
   }
 
-  const currentQuote = data;
+  const currentQuote = quote;
 
   return (
     <YStack
@@ -115,7 +106,7 @@ export function Home() {
         animation="quick"
         key={currentQuote.quote}
       >
-        <QuoteDisplay quote={currentQuote || null} />
+        <QuoteDisplay quote={currentQuote} />
         <XStack justifyContent="center" marginTop="$6">
           <Button
             onPress={getRandomQuote}
@@ -142,4 +133,3 @@ export function Home() {
     </YStack>
   );
 }
-

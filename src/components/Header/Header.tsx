@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { Text } from "@tamagui/core";
 import { YStack, XStack } from "@tamagui/stacks";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import { buildQuoteUrl } from "../../utils/permalinks";
+import { useRandomQuote } from "../../hooks";
 
 interface NavLinkProps {
   children: React.ReactNode;
   isActive?: boolean;
-
   onPress?: () => void;
 }
 
@@ -29,23 +32,50 @@ const NavLink: React.FC<NavLinkProps> = ({ children, isActive, onPress }) => {
   );
 };
 
+
 const menuItems = [
-  { name: "Home", page: "home" },
-  { name: "Random", page: "random" },
-  { name: "Browse", page: "quotes" },
+  { name: "Home", path: "/", action: "navigate" as const },
+  { name: "Random", path: "/random", action: "random" as const },
+  { name: "Browse", path: "/quotes", action: "navigate" as const },
 ];
 
 export const Header: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState("home");
+
+  const { refetch } = useRandomQuote();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const handleNavClick = (page: string) => {
-    setCurrentPage(page);
+  const handleRandomQuote = async () => {
+    try {
+      const result = await refetch();
+      if (result.data?.randomQuote) {
+        const newUrl = buildQuoteUrl(result.data.randomQuote);
+        navigate(newUrl);
+      }
+    } catch (error) {
+      console.error('Error fetching random quote:', error);
+    }
+  };
+
+  const handleNavClick = (itemPath: string, itemAction: "navigate" | "random") => {
+    if (itemAction === "random") {
+      handleRandomQuote();
+    } else {
+      navigate(itemPath);
+    }
     setIsMobileMenuOpen(false);
+  };
+
+  const isActive = (path: string) => {
+    if (path === "/") {
+      return location.pathname === "/";
+    }
+    return location.pathname.startsWith(path);
   };
 
   return (
@@ -72,7 +102,7 @@ export const Header: React.FC = () => {
           fontWeight="700"
           color="white"
           cursor="pointer"
-          onPress={() => handleNavClick("home")}
+          onPress={() => handleNavClick("/", "navigate")}
         >
           A Motivational Quote
         </Text>
@@ -88,9 +118,9 @@ export const Header: React.FC = () => {
         >
           {menuItems.map((item) => (
             <NavLink
-              key={item.page}
-              isActive={currentPage === item.page}
-              onPress={() => handleNavClick(item.page)}
+              key={item.path}
+              isActive={isActive(item.path)}
+              onPress={() => handleNavClick(item.path, item.action)}
             >
               {item.name}
             </NavLink>
@@ -156,9 +186,9 @@ export const Header: React.FC = () => {
         <YStack padding="$3" gap="$2">
           {menuItems.map((item) => (
             <NavLink
-              key={item.page}
-              isActive={currentPage === item.page}
-              onPress={() => handleNavClick(item.page)}
+              key={item.path}
+              isActive={isActive(item.path)}
+              onPress={() => handleNavClick(item.path, item.action)}
             >
               {item.name}
             </NavLink>
