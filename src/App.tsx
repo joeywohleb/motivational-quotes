@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { YStack } from '@tamagui/stacks';
 
 import { apolloClient } from './graphql/client';
-import { Header }  from './components';
+import { Header } from './components';
 import { Home, ViewQuote, NotFound } from './pages';
 import './App.css';
 

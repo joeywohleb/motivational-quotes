@@ -8,6 +8,7 @@ import { GET_QUOTE_BY_ID, GET_RANDOM_QUOTE } from '../../graphql/queries';
 import { render } from '../../test-utils';
 
 // Import the mocked module
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const routerDom = require('react-router-dom');
 const { mockNavigate, mockParams } = routerDom;
 
@@ -120,7 +121,9 @@ describe('ViewQuote', () => {
         expect(screen.queryByText(/loading quote/i)).not.toBeInTheDocument();
       });
 
-      expect(screen.getByText(new RegExp(mockQuote.quote, 'i'))).toBeInTheDocument();
+      expect(
+        screen.getByText(new RegExp(mockQuote.quote, 'i'))
+      ).toBeInTheDocument();
     });
 
     it('should display author name', async () => {
@@ -155,7 +158,9 @@ describe('ViewQuote', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByText(new RegExp(mockQuote.author.name, 'i'))).toBeInTheDocument();
+        expect(
+          screen.getByText(new RegExp(mockQuote.author.name, 'i'))
+        ).toBeInTheDocument();
       });
     });
   });
@@ -249,7 +254,9 @@ describe('ViewQuote', () => {
       jest.advanceTimersByTime(150);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/quote/2', { replace: false });
+        expect(mockNavigate).toHaveBeenCalledWith('/quote/2', {
+          replace: false,
+        });
       });
     });
   });
@@ -321,7 +328,9 @@ describe('ViewQuote', () => {
       );
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/not-found', { replace: true });
+        expect(mockNavigate).toHaveBeenCalledWith('/not-found', {
+          replace: true,
+        });
       });
     });
   });

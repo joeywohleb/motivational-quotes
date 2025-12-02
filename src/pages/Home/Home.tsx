@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { Text } from '@tamagui/core';
 import { YStack, XStack } from '@tamagui/stacks';
@@ -7,7 +5,7 @@ import { Button } from '@tamagui/button';
 import { useNavigate } from 'react-router-dom';
 
 import { useRandomQuote } from '../../hooks';
-import {  QuoteDisplay }  from '../../components';
+import { QuoteDisplay } from '../../components';
 import { buildQuoteUrl } from '../../utils/permalinks';
 
 export function Home() {
@@ -142,4 +140,3 @@ export function Home() {
     </YStack>
   );
 }
-

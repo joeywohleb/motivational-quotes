@@ -19,12 +19,16 @@ describe('QuoteDisplay', () => {
   it('should display the quote text', () => {
     render(<QuoteDisplay quote={mockQuote} />);
 
-    expect(screen.getByText(new RegExp(mockQuote.quote, 'i'))).toBeInTheDocument();
+    expect(
+      screen.getByText(new RegExp(mockQuote.quote, 'i'))
+    ).toBeInTheDocument();
   });
 
   it('should display the author name', () => {
     render(<QuoteDisplay quote={mockQuote} />);
 
-    expect(screen.getByText(new RegExp(mockQuote.author.name, 'i'))).toBeInTheDocument();
+    expect(
+      screen.getByText(new RegExp(mockQuote.author.name, 'i'))
+    ).toBeInTheDocument();
   });
 });

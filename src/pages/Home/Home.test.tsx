@@ -90,7 +90,9 @@ describe('Home', () => {
         expect(screen.queryByText(/loading quotes/i)).not.toBeInTheDocument();
       });
 
-      expect(screen.getByText(new RegExp(mockQuote.quote, 'i'))).toBeInTheDocument();
+      expect(
+        screen.getByText(new RegExp(mockQuote.quote, 'i'))
+      ).toBeInTheDocument();
     });
 
     it('should display author name', async () => {
@@ -114,7 +116,9 @@ describe('Home', () => {
       );
 
       await waitFor(() => {
-        expect(screen.getByText(new RegExp(mockQuote.author.name, 'i'))).toBeInTheDocument();
+        expect(
+          screen.getByText(new RegExp(mockQuote.author.name, 'i'))
+        ).toBeInTheDocument();
       });
     });
   });
@@ -179,7 +183,9 @@ describe('Home', () => {
         expect(screen.queryByText(/loading quotes/i)).not.toBeInTheDocument();
       });
 
-      expect(screen.getByText(new RegExp(mockQuote.quote, 'i'))).toBeInTheDocument();
+      expect(
+        screen.getByText(new RegExp(mockQuote.quote, 'i'))
+      ).toBeInTheDocument();
 
       const button = screen.getByText(/new quote/i);
       userEvent.click(button);
@@ -188,7 +194,9 @@ describe('Home', () => {
       jest.advanceTimersByTime(150);
 
       await waitFor(() => {
-        expect(screen.getByText(new RegExp(mockQuote2.quote, 'i'))).toBeInTheDocument();
+        expect(
+          screen.getByText(new RegExp(mockQuote2.quote, 'i'))
+        ).toBeInTheDocument();
       });
     });
   });

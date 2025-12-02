@@ -7,15 +7,12 @@ interface QuoteByIdData {
 }
 
 export function useQuoteById(quoteId: number | null) {
-  const { loading, error, data } = useQuery<QuoteByIdData>(
-    GET_QUOTE_BY_ID,
-    {
-      variables: {
-        quoteId,
-      },
-      skip: !quoteId || isNaN(quoteId),
-    }
-  );
+  const { loading, error, data } = useQuery<QuoteByIdData>(GET_QUOTE_BY_ID, {
+    variables: {
+      quoteId,
+    },
+    skip: !quoteId || isNaN(quoteId),
+  });
 
   return {
     loading,

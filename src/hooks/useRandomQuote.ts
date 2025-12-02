@@ -8,7 +8,6 @@ interface RandomQuoteData {
 }
 
 export function useRandomQuote() {
-
   const { loading, error, data, refetch } = useQuery<RandomQuoteData>(
     GET_RANDOM_QUOTE,
     {
