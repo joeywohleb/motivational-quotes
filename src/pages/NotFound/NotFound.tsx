@@ -35,7 +35,8 @@ export function NotFound() {
           Page Not Found
         </Text>
         <Text fontSize="$5" color="$color" opacity={0.7} textAlign="center">
-          The page you're looking for doesn't exist or may have been removed.
+          The page you&apos;re looking for doesn&apos;t exist or may have been
+          removed.
         </Text>
         <Button
           onPress={() => navigate('/')}

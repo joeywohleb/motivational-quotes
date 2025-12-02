@@ -1,0 +1,56 @@
+module.exports = {
+  root: true,
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+    jest: true,
+  },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:prettier/recommended',
+  ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: './tsconfig.json',
+  },
+  plugins: [
+    'react',
+    'react-hooks',
+    '@typescript-eslint',
+    'prettier',
+  ],
+  rules: {
+    'react/react-in-jsx-scope': 'off', // Not needed in React 17+
+    'react/prop-types': 'off', // Using TypeScript for prop validation
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-unused-vars': ['warn', {
+      argsIgnorePattern: '^_',
+      varsIgnorePattern: '^_',
+    }],
+    'prettier/prettier': 'error',
+    'no-console': ['warn', { allow: ['warn', 'error'] }],
+  },
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
+  ignorePatterns: [
+    'build',
+    'node_modules',
+    'dist',
+    'coverage',
+    '*.config.js',
+    '*.config.ts',
+  ],
+};

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const React = require('react');
 
 const mockNavigate = jest.fn();
@@ -12,9 +13,10 @@ module.exports = {
   BrowserRouter: ({ children }) => React.createElement('div', null, children),
   MemoryRouter: ({ children }) => React.createElement('div', null, children),
   Routes: ({ children }) => React.createElement('div', null, children),
-  Route: ({ children, element }) => element || null,
+  Route: ({ _children, element }) => element || null,
   Link: ({ children, to }) => React.createElement('a', { href: to }, children),
-  NavLink: ({ children, to }) => React.createElement('a', { href: to }, children),
+  NavLink: ({ children, to }) =>
+    React.createElement('a', { href: to }, children),
   mockNavigate,
   mockLocation,
   mockParams,

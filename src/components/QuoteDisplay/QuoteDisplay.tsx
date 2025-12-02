@@ -1,9 +1,9 @@
-import React from "react";
-import { Text } from "@tamagui/core";
-import { XStack } from "@tamagui/stacks";
-import { Separator } from "@tamagui/separator";
+import React from 'react';
+import { Text } from '@tamagui/core';
+import { XStack } from '@tamagui/stacks';
+import { Separator } from '@tamagui/separator';
 
-import { Quote } from "../../types";
+import { Quote } from '../../types';
 
 interface Props {
   quote: Quote;
@@ -20,7 +20,7 @@ export const QuoteDisplay: React.FC<Props> = ({ quote }) => {
         textAlign="center"
         marginBottom="$2"
       >
-        "{quote.quote}"
+        &ldquo;{quote.quote}&rdquo;
       </Text>
 
       <Separator />

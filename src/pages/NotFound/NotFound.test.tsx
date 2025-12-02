@@ -9,6 +9,7 @@ import { render } from '../../test-utils';
 jest.mock('react-router-dom');
 
 // Import the mocked module
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const routerDom = require('react-router-dom');
 const { mockNavigate } = routerDom;
 
@@ -28,7 +29,9 @@ describe('NotFound', () => {
       render(<NotFound />);
 
       expect(
-        screen.getByText(/the page you're looking for doesn't exist or may have been removed/i)
+        screen.getByText(
+          /the page you're looking for doesn't exist or may have been removed/i
+        )
       ).toBeInTheDocument();
     });
 

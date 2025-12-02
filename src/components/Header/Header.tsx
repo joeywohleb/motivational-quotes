@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Text } from "@tamagui/core";
-import { YStack, XStack } from "@tamagui/stacks";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState } from 'react';
+import { Text } from '@tamagui/core';
+import { YStack, XStack } from '@tamagui/stacks';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-import { buildQuoteUrl } from "../../utils/permalinks";
-import { useRandomQuote } from "../../hooks";
+import { buildQuoteUrl } from '../../utils/permalinks';
+import { useRandomQuote } from '../../hooks';
 
 interface NavLinkProps {
   children: React.ReactNode;
@@ -19,12 +19,12 @@ const NavLink: React.FC<NavLinkProps> = ({ children, isActive, onPress }) => {
       paddingHorizontal="$3"
       paddingVertical="$2"
       fontSize="$4"
-      color={isActive ? "white" : "rgba(255, 255, 255, 0.7)"}
+      color={isActive ? 'white' : 'rgba(255, 255, 255, 0.7)'}
       fontWeight="600"
       cursor="pointer"
       userSelect="none"
       hoverStyle={{
-        color: "white",
+        color: 'white',
       }}
     >
       {children}
@@ -32,11 +32,10 @@ const NavLink: React.FC<NavLinkProps> = ({ children, isActive, onPress }) => {
   );
 };
 
-
 const menuItems = [
-  { name: "Home", path: "/", action: "navigate" as const },
-  { name: "Random", path: "/random", action: "random" as const },
-  { name: "Browse", path: "/quotes", action: "navigate" as const },
+  { name: 'Home', path: '/', action: 'navigate' as const },
+  { name: 'Random', path: '/random', action: 'random' as const },
+  { name: 'Browse', path: '/quotes', action: 'navigate' as const },
 ];
 
 export const Header: React.FC = () => {
@@ -62,8 +61,11 @@ export const Header: React.FC = () => {
     }
   };
 
-  const handleNavClick = (itemPath: string, itemAction: "navigate" | "random") => {
-    if (itemAction === "random") {
+  const handleNavClick = (
+    itemPath: string,
+    itemAction: 'navigate' | 'random'
+  ) => {
+    if (itemAction === 'random') {
       handleRandomQuote();
     } else {
       navigate(itemPath);
@@ -72,8 +74,8 @@ export const Header: React.FC = () => {
   };
 
   const isActive = (path: string) => {
-    if (path === "/") {
-      return location.pathname === "/";
+    if (path === '/') {
+      return location.pathname === '/';
     }
     return location.pathname.startsWith(path);
   };
@@ -102,7 +104,7 @@ export const Header: React.FC = () => {
           fontWeight="700"
           color="white"
           cursor="pointer"
-          onPress={() => handleNavClick("/", "navigate")}
+          onPress={() => handleNavClick('/', 'navigate')}
         >
           A Motivational Quote
         </Text>
@@ -113,7 +115,7 @@ export const Header: React.FC = () => {
           alignItems="center"
           display="none"
           $gtSm={{
-            display: "flex",
+            display: 'flex',
           }}
         >
           {menuItems.map((item) => (
@@ -133,7 +135,7 @@ export const Header: React.FC = () => {
           padding="$2"
           display="flex"
           $gtSm={{
-            display: "none",
+            display: 'none',
           }}
           cursor="pointer"
           marginLeft="auto"
@@ -145,7 +147,7 @@ export const Header: React.FC = () => {
               backgroundColor="white"
               borderRadius="$1"
               animation="quick"
-              rotate={isMobileMenuOpen ? "45deg" : "0deg"}
+              rotate={isMobileMenuOpen ? '45deg' : '0deg'}
               y={isMobileMenuOpen ? 8 : 0}
             />
             <YStack
@@ -162,7 +164,7 @@ export const Header: React.FC = () => {
               backgroundColor="white"
               borderRadius="$1"
               animation="quick"
-              rotate={isMobileMenuOpen ? "-45deg" : "0deg"}
+              rotate={isMobileMenuOpen ? '-45deg' : '0deg'}
               y={isMobileMenuOpen ? -8 : 0}
             />
           </YStack>
@@ -173,7 +175,7 @@ export const Header: React.FC = () => {
       <YStack
         display="flex"
         $gtSm={{
-          display: "none",
+          display: 'none',
         }}
         overflow="hidden"
         maxHeight={isMobileMenuOpen ? 200 : 0}

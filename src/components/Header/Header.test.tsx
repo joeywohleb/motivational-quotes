@@ -77,7 +77,7 @@ describe('Header', () => {
       renderHeader();
 
       const homeLinks = screen.getAllByText('Home');
-      homeLinks.forEach(link => {
+      homeLinks.forEach((link) => {
         expect(link).toBeInTheDocument();
       });
     });
@@ -113,7 +113,9 @@ describe('Header', () => {
       const { container } = renderHeader();
 
       // Find the hamburger menu container (YStack with three child divs)
-      const hamburgerButton = container.querySelector('div[class*="_cur-pointer"][class*="_marginLeft-auto"]');
+      const hamburgerButton = container.querySelector(
+        'div[class*="_cur-pointer"][class*="_marginLeft-auto"]'
+      );
 
       expect(hamburgerButton).toBeInTheDocument();
 
@@ -127,7 +129,9 @@ describe('Header', () => {
       const { container } = renderHeader();
 
       // Find the hamburger menu container
-      const hamburgerButton = container.querySelector('div[class*="_cur-pointer"][class*="_marginLeft-auto"]');
+      const hamburgerButton = container.querySelector(
+        'div[class*="_cur-pointer"][class*="_marginLeft-auto"]'
+      );
 
       if (hamburgerButton) {
         userEvent.click(hamburgerButton);
