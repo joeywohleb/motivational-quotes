@@ -29,3 +29,33 @@ export const GET_QUOTE_BY_ID = gql`
     }
   }
 `;
+
+export const GET_NEXT_QUOTE = gql`
+  query GetNextQuote($currentQuoteId: Int!) {
+    nextQuote(id: $currentQuoteId) {
+      id
+      quote
+      permalink
+      author {
+        id
+        name
+        permalink
+      }
+    }
+  }
+`;
+
+export const GET_PREVIOUS_QUOTE = gql`
+  query GetPreviousQuote($currentQuoteId: Int!) {
+    prevQuote(id: $currentQuoteId) {
+      id
+      quote
+      permalink
+      author {
+        id
+        name
+        permalink
+      }
+    }
+  }
+`;

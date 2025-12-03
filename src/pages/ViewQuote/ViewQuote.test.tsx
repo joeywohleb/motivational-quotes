@@ -4,7 +4,12 @@ import userEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 
 import { ViewQuote } from './ViewQuote';
-import { GET_QUOTE_BY_ID, GET_RANDOM_QUOTE } from '../../graphql/queries';
+import {
+  GET_QUOTE_BY_ID,
+  GET_RANDOM_QUOTE,
+  GET_NEXT_QUOTE,
+  GET_PREVIOUS_QUOTE,
+} from '../../graphql/queries';
 import { render } from '../../test-utils';
 
 // Import the mocked module
@@ -366,6 +371,222 @@ describe('ViewQuote', () => {
 
       // Reset mockParams
       Object.assign(mockParams, { id: '1' });
+    });
+  });
+
+  describe('Next Quote Button', () => {
+    it('should display "Next" button', async () => {
+      const mocks = [
+        {
+          request: {
+            query: GET_QUOTE_BY_ID,
+            variables: { quoteId: 1 },
+          },
+          result: {
+            data: {
+              quoteById: mockQuote,
+            },
+          },
+        },
+        {
+          request: {
+            query: GET_RANDOM_QUOTE,
+          },
+          result: {
+            data: {
+              randomQuote: mockQuote,
+            },
+          },
+        },
+      ];
+
+      render(
+        <MockedProvider mocks={mocks}>
+          <ViewQuote />
+        </MockedProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText(/^next$/i)).toBeInTheDocument();
+      });
+    });
+
+    it('should call fetchNextQuote and navigate when Next button is clicked', async () => {
+      const mockQuote3 = {
+        id: '3',
+        quote: 'Stay hungry, stay foolish.',
+        permalink: 'test-quote-3',
+        author: {
+          id: '1',
+          name: 'Steve Jobs',
+          permalink: 'steve-jobs',
+        },
+      };
+
+      const mocks = [
+        {
+          request: {
+            query: GET_QUOTE_BY_ID,
+            variables: { quoteId: 1 },
+          },
+          result: {
+            data: {
+              quoteById: mockQuote,
+            },
+          },
+        },
+        {
+          request: {
+            query: GET_RANDOM_QUOTE,
+          },
+          result: {
+            data: {
+              randomQuote: mockQuote,
+            },
+          },
+        },
+        {
+          request: {
+            query: GET_NEXT_QUOTE,
+            variables: { currentQuoteId: 1 },
+          },
+          result: {
+            data: {
+              nextQuote: mockQuote3,
+            },
+          },
+        },
+      ];
+
+      render(
+        <MockedProvider mocks={mocks}>
+          <ViewQuote />
+        </MockedProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.queryByText(/loading quote/i)).not.toBeInTheDocument();
+      });
+
+      const button = screen.getByText(/^next$/i);
+      userEvent.click(button);
+
+      // Wait for animation timeout
+      jest.advanceTimersByTime(150);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith('/quote/3', {
+          replace: false,
+        });
+      });
+    });
+  });
+
+  describe('Previous Quote Button', () => {
+    it('should display "Previous" button', async () => {
+      const mocks = [
+        {
+          request: {
+            query: GET_QUOTE_BY_ID,
+            variables: { quoteId: 1 },
+          },
+          result: {
+            data: {
+              quoteById: mockQuote,
+            },
+          },
+        },
+        {
+          request: {
+            query: GET_RANDOM_QUOTE,
+          },
+          result: {
+            data: {
+              randomQuote: mockQuote,
+            },
+          },
+        },
+      ];
+
+      render(
+        <MockedProvider mocks={mocks}>
+          <ViewQuote />
+        </MockedProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText(/previous/i)).toBeInTheDocument();
+      });
+    });
+
+    it('should call fetchPreviousQuote and navigate when Previous button is clicked', async () => {
+      const mockQuote0 = {
+        id: '0',
+        quote: 'Your time is limited.',
+        permalink: 'test-quote-0',
+        author: {
+          id: '1',
+          name: 'Steve Jobs',
+          permalink: 'steve-jobs',
+        },
+      };
+
+      const mocks = [
+        {
+          request: {
+            query: GET_QUOTE_BY_ID,
+            variables: { quoteId: 1 },
+          },
+          result: {
+            data: {
+              quoteById: mockQuote,
+            },
+          },
+        },
+        {
+          request: {
+            query: GET_RANDOM_QUOTE,
+          },
+          result: {
+            data: {
+              randomQuote: mockQuote,
+            },
+          },
+        },
+        {
+          request: {
+            query: GET_PREVIOUS_QUOTE,
+            variables: { currentQuoteId: 1 },
+          },
+          result: {
+            data: {
+              prevQuote: mockQuote0,
+            },
+          },
+        },
+      ];
+
+      render(
+        <MockedProvider mocks={mocks}>
+          <ViewQuote />
+        </MockedProvider>
+      );
+
+      await waitFor(() => {
+        expect(screen.queryByText(/loading quote/i)).not.toBeInTheDocument();
+      });
+
+      const button = screen.getByText(/previous/i);
+      userEvent.click(button);
+
+      // Wait for animation timeout
+      jest.advanceTimersByTime(150);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith('/quote/0', {
+          replace: false,
+        });
+      });
     });
   });
 });
