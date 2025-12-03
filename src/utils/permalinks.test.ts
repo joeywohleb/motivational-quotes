@@ -3,7 +3,7 @@ import { Quote } from '../types';
 
 describe('buildQuoteUrl', () => {
   describe('Valid Quote', () => {
-    it('should build correct URL for a quote', () => {
+    it('should build correct URL using author and quote permalinks', () => {
       const quote: Quote = {
         id: '1',
         quote: 'The only way to do great work is to love what you do.',
@@ -16,10 +16,10 @@ describe('buildQuoteUrl', () => {
       };
 
       const url = buildQuoteUrl(quote);
-      expect(url).toBe('/quote/1');
+      expect(url).toBe('/steve-jobs/test-quote');
     });
 
-    it('should build correct URL for a quote with different ID', () => {
+    it('should build correct URL for a quote with different permalinks', () => {
       const quote: Quote = {
         id: '42',
         quote: 'Another quote',
@@ -32,10 +32,10 @@ describe('buildQuoteUrl', () => {
       };
 
       const url = buildQuoteUrl(quote);
-      expect(url).toBe('/quote/42');
+      expect(url).toBe('/author-name/another-quote');
     });
 
-    it('should handle numeric string IDs', () => {
+    it('should use permalinks regardless of IDs', () => {
       const quote: Quote = {
         id: '999',
         quote: 'Test quote',
@@ -48,12 +48,12 @@ describe('buildQuoteUrl', () => {
       };
 
       const url = buildQuoteUrl(quote);
-      expect(url).toBe('/quote/999');
+      expect(url).toBe('/test-author/test');
     });
   });
 
   describe('URL Format', () => {
-    it('should start with /quote/', () => {
+    it('should follow /{author-permalink}/{quote-permalink} format', () => {
       const quote: Quote = {
         id: '1',
         quote: 'Test',
@@ -66,10 +66,11 @@ describe('buildQuoteUrl', () => {
       };
 
       const url = buildQuoteUrl(quote);
-      expect(url).toMatch(/^\/quote\//);
+      expect(url).toMatch(/^\/[^/]+\/[^/]+$/);
+      expect(url).toBe('/author/test');
     });
 
-    it('should only use quote ID in URL', () => {
+    it('should use permalinks, not IDs or raw text', () => {
       const quote: Quote = {
         id: '123',
         quote: 'This is a test quote with special chars!@#$%',
@@ -82,43 +83,82 @@ describe('buildQuoteUrl', () => {
       };
 
       const url = buildQuoteUrl(quote);
-      expect(url).toBe('/quote/123');
-      expect(url).not.toContain('this-is-a-test-quote');
-      expect(url).not.toContain('author');
+      expect(url).toBe(
+        '/author-with-special-chars/this-is-a-test-quote-with-special-chars'
+      );
+      expect(url).not.toContain('123');
+      expect(url).not.toContain('456');
+      expect(url).not.toContain('!@#$%');
+    });
+
+    it('should include both author and quote permalinks', () => {
+      const quote: Quote = {
+        id: '1',
+        quote: 'Test',
+        permalink: 'my-quote',
+        author: {
+          id: '1',
+          name: 'Author',
+          permalink: 'my-author',
+        },
+      };
+
+      const url = buildQuoteUrl(quote);
+      expect(url).toContain('my-author');
+      expect(url).toContain('my-quote');
+      expect(url.split('/').length).toBe(3); // Empty string, author, quote
     });
   });
 
   describe('Edge Cases', () => {
-    it('should handle single digit IDs', () => {
+    it('should handle short permalinks', () => {
       const quote: Quote = {
         id: '1',
         quote: 'Test',
-        permalink: 'test',
+        permalink: 'a',
         author: {
           id: '1',
           name: 'Author',
-          permalink: 'author',
+          permalink: 'b',
         },
       };
 
       const url = buildQuoteUrl(quote);
-      expect(url).toBe('/quote/1');
+      expect(url).toBe('/b/a');
     });
 
-    it('should handle large numeric IDs', () => {
+    it('should handle long permalinks', () => {
       const quote: Quote = {
         id: '999999999',
         quote: 'Test',
-        permalink: 'test',
+        permalink: 'this-is-a-very-long-quote-permalink-with-many-words',
         author: {
           id: '1',
           name: 'Author',
-          permalink: 'author',
+          permalink: 'this-is-a-very-long-author-permalink',
         },
       };
 
       const url = buildQuoteUrl(quote);
-      expect(url).toBe('/quote/999999999');
+      expect(url).toBe(
+        '/this-is-a-very-long-author-permalink/this-is-a-very-long-quote-permalink-with-many-words'
+      );
+    });
+
+    it('should handle permalinks with hyphens', () => {
+      const quote: Quote = {
+        id: '1',
+        quote: 'Test',
+        permalink: 'quote-with-many-hyphens',
+        author: {
+          id: '1',
+          name: 'Author',
+          permalink: 'author-name-with-hyphens',
+        },
+      };
+
+      const url = buildQuoteUrl(quote);
+      expect(url).toBe('/author-name-with-hyphens/quote-with-many-hyphens');
     });
   });
 });

@@ -15,7 +15,10 @@ function App() {
           <Header />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/quote/:id" element={<ViewQuote />} />
+            <Route
+              path="/:authorPermalink/:quotePermalink"
+              element={<ViewQuote />}
+            />
             <Route path="/not-found" element={<NotFound />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -5,7 +5,7 @@ import { Button } from '@tamagui/button';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import {
-  useQuoteById,
+  useQuoteByPermalink,
   useRandomQuote,
   useNextQuote,
   usePreviousQuote,
@@ -14,13 +14,17 @@ import { QuoteDisplay } from '../../components';
 import { buildQuoteUrl } from '../../utils/permalinks';
 
 export function ViewQuote() {
-  const { id } = useParams<{ id: string }>();
+  const { authorPermalink, quotePermalink } = useParams<{
+    authorPermalink: string;
+    quotePermalink: string;
+  }>();
   const navigate = useNavigate();
   const [isAnimating, setIsAnimating] = useState(false);
 
-  const quoteId = id ? parseInt(id, 10) : null;
-
-  const { loading, error, quote } = useQuoteById(quoteId);
+  const { loading, error, quote } = useQuoteByPermalink(
+    authorPermalink,
+    quotePermalink
+  );
   const { refetch } = useRandomQuote();
   const { fetchNextQuote } = useNextQuote();
   const { fetchPreviousQuote } = usePreviousQuote();
@@ -43,10 +47,10 @@ export function ViewQuote() {
   };
 
   const getNextQuote = async () => {
-    if (!quoteId) return;
+    if (!quote?.id) return;
     setIsAnimating(true);
     try {
-      const result = await fetchNextQuote(quoteId);
+      const result = await fetchNextQuote(parseInt(quote.id, 10));
       if (result.data?.nextQuote) {
         const newUrl = buildQuoteUrl(result.data.nextQuote);
         navigate(newUrl, { replace: false });
@@ -59,10 +63,10 @@ export function ViewQuote() {
   };
 
   const getPreviousQuote = async () => {
-    if (!quoteId) return;
+    if (!quote?.id) return;
     setIsAnimating(true);
     try {
-      const result = await fetchPreviousQuote(quoteId);
+      const result = await fetchPreviousQuote(parseInt(quote.id, 10));
       if (result.data?.prevQuote) {
         const newUrl = buildQuoteUrl(result.data.prevQuote);
         navigate(newUrl, { replace: false });
