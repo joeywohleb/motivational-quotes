@@ -59,3 +59,18 @@ export const GET_PREVIOUS_QUOTE = gql`
     }
   }
 `;
+
+export const GET_QUOTE_BY_PERMALINK = gql`
+  query GetQuoteByPermalink($author: String!, $permalink: String!) {
+    quoteByPermalink(author: $author, permalink: $permalink) {
+      id
+      quote
+      permalink
+      author {
+        id
+        name
+        permalink
+      }
+    }
+  }
+`;

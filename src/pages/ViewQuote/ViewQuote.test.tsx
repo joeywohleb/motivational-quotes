@@ -5,7 +5,7 @@ import { MockedProvider } from '@apollo/client/testing';
 
 import { ViewQuote } from './ViewQuote';
 import {
-  GET_QUOTE_BY_ID,
+  GET_QUOTE_BY_PERMALINK,
   GET_RANDOM_QUOTE,
   GET_NEXT_QUOTE,
   GET_PREVIOUS_QUOTE,
@@ -46,6 +46,11 @@ describe('ViewQuote', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     mockNavigate.mockClear();
+    // Set default params for permalink-based routing
+    Object.assign(mockParams, {
+      authorPermalink: 'steve-jobs',
+      quotePermalink: 'test-quote',
+    });
   });
 
   afterEach(() => {
@@ -58,12 +63,12 @@ describe('ViewQuote', () => {
       const mocks = [
         {
           request: {
-            query: GET_QUOTE_BY_ID,
-            variables: { quoteId: 1 },
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'steve-jobs', permalink: 'test-quote' },
           },
           result: {
             data: {
-              quoteById: mockQuote,
+              quoteByPermalink: mockQuote,
             },
           },
           delay: 1000,
@@ -95,12 +100,12 @@ describe('ViewQuote', () => {
       const mocks = [
         {
           request: {
-            query: GET_QUOTE_BY_ID,
-            variables: { quoteId: 1 },
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'steve-jobs', permalink: 'test-quote' },
           },
           result: {
             data: {
-              quoteById: mockQuote,
+              quoteByPermalink: mockQuote,
             },
           },
         },
@@ -135,12 +140,12 @@ describe('ViewQuote', () => {
       const mocks = [
         {
           request: {
-            query: GET_QUOTE_BY_ID,
-            variables: { quoteId: 1 },
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'steve-jobs', permalink: 'test-quote' },
           },
           result: {
             data: {
-              quoteById: mockQuote,
+              quoteByPermalink: mockQuote,
             },
           },
         },
@@ -175,12 +180,12 @@ describe('ViewQuote', () => {
       const mocks = [
         {
           request: {
-            query: GET_QUOTE_BY_ID,
-            variables: { quoteId: 1 },
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'steve-jobs', permalink: 'test-quote' },
           },
           result: {
             data: {
-              quoteById: mockQuote,
+              quoteByPermalink: mockQuote,
             },
           },
         },
@@ -211,12 +216,12 @@ describe('ViewQuote', () => {
       const mocks = [
         {
           request: {
-            query: GET_QUOTE_BY_ID,
-            variables: { quoteId: 1 },
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'steve-jobs', permalink: 'test-quote' },
           },
           result: {
             data: {
-              quoteById: mockQuote,
+              quoteByPermalink: mockQuote,
             },
           },
         },
@@ -259,7 +264,7 @@ describe('ViewQuote', () => {
       jest.advanceTimersByTime(150);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/quote/2', {
+        expect(mockNavigate).toHaveBeenCalledWith('/steve-jobs/test-quote-2', {
           replace: false,
         });
       });
@@ -271,8 +276,8 @@ describe('ViewQuote', () => {
       const mocks = [
         {
           request: {
-            query: GET_QUOTE_BY_ID,
-            variables: { quoteId: 1 },
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'steve-jobs', permalink: 'test-quote' },
           },
           error: new Error('GraphQL error'),
         },
@@ -305,12 +310,12 @@ describe('ViewQuote', () => {
       const mocks = [
         {
           request: {
-            query: GET_QUOTE_BY_ID,
-            variables: { quoteId: 1 },
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'steve-jobs', permalink: 'test-quote' },
           },
           result: {
             data: {
-              quoteById: null,
+              quoteByPermalink: null,
             },
           },
         },
@@ -340,12 +345,26 @@ describe('ViewQuote', () => {
     });
   });
 
-  describe('Invalid Quote ID', () => {
-    it('should handle invalid quote ID gracefully', async () => {
-      // Mock invalid ID
-      Object.assign(mockParams, { id: 'invalid' });
+  describe('Invalid Permalinks', () => {
+    it('should handle invalid permalinks gracefully', async () => {
+      // Mock invalid permalinks
+      Object.assign(mockParams, {
+        authorPermalink: 'invalid-author',
+        quotePermalink: 'invalid-quote',
+      });
 
       const mocks = [
+        {
+          request: {
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'invalid-author', permalink: 'invalid-quote' },
+          },
+          result: {
+            data: {
+              quoteByPermalink: null,
+            },
+          },
+        },
         {
           request: {
             query: GET_RANDOM_QUOTE,
@@ -364,13 +383,18 @@ describe('ViewQuote', () => {
         </MockedProvider>
       );
 
-      // Should not crash, and should handle the invalid ID
+      // Should redirect to not-found when quote is not found
       await waitFor(() => {
-        expect(screen.queryByText(/loading quote/i)).not.toBeInTheDocument();
+        expect(mockNavigate).toHaveBeenCalledWith('/not-found', {
+          replace: true,
+        });
       });
 
       // Reset mockParams
-      Object.assign(mockParams, { id: '1' });
+      Object.assign(mockParams, {
+        authorPermalink: 'steve-jobs',
+        quotePermalink: 'test-quote',
+      });
     });
   });
 
@@ -379,12 +403,12 @@ describe('ViewQuote', () => {
       const mocks = [
         {
           request: {
-            query: GET_QUOTE_BY_ID,
-            variables: { quoteId: 1 },
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'steve-jobs', permalink: 'test-quote' },
           },
           result: {
             data: {
-              quoteById: mockQuote,
+              quoteByPermalink: mockQuote,
             },
           },
         },
@@ -426,12 +450,12 @@ describe('ViewQuote', () => {
       const mocks = [
         {
           request: {
-            query: GET_QUOTE_BY_ID,
-            variables: { quoteId: 1 },
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'steve-jobs', permalink: 'test-quote' },
           },
           result: {
             data: {
-              quoteById: mockQuote,
+              quoteByPermalink: mockQuote,
             },
           },
         },
@@ -475,7 +499,7 @@ describe('ViewQuote', () => {
       jest.advanceTimersByTime(150);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/quote/3', {
+        expect(mockNavigate).toHaveBeenCalledWith('/steve-jobs/test-quote-3', {
           replace: false,
         });
       });
@@ -487,12 +511,12 @@ describe('ViewQuote', () => {
       const mocks = [
         {
           request: {
-            query: GET_QUOTE_BY_ID,
-            variables: { quoteId: 1 },
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'steve-jobs', permalink: 'test-quote' },
           },
           result: {
             data: {
-              quoteById: mockQuote,
+              quoteByPermalink: mockQuote,
             },
           },
         },
@@ -534,12 +558,12 @@ describe('ViewQuote', () => {
       const mocks = [
         {
           request: {
-            query: GET_QUOTE_BY_ID,
-            variables: { quoteId: 1 },
+            query: GET_QUOTE_BY_PERMALINK,
+            variables: { author: 'steve-jobs', permalink: 'test-quote' },
           },
           result: {
             data: {
-              quoteById: mockQuote,
+              quoteByPermalink: mockQuote,
             },
           },
         },
@@ -583,7 +607,7 @@ describe('ViewQuote', () => {
       jest.advanceTimersByTime(150);
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/quote/0', {
+        expect(mockNavigate).toHaveBeenCalledWith('/steve-jobs/test-quote-0', {
           replace: false,
         });
       });
